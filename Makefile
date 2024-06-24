@@ -244,6 +244,9 @@ all: $(TARGETS)
 train_gpt2: train_gpt2.c
 	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) $^ $(LDLIBS) $(OUTPUT_FILE)
 
+train_gpt2_lib: train_gpt2.c
+	$(CC) $(CFLAGS) -shared -DLLMC_LIB=1 -fPIC $(INCLUDES) $(LDFLAGS) $^ $(LDLIBS) -o train_gpt2.so
+
 test_gpt2: test_gpt2.c
 	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) $^ $(LDLIBS) $(OUTPUT_FILE)
 

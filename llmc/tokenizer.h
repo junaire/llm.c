@@ -83,6 +83,12 @@ void tokenizer_init(Tokenizer *tokenizer, const char *filename) {
     tokenizer->init_ok = 1;
 }
 
+Tokenizer* tokenizer_create(const char *filename) {
+  Tokenizer* tokenizer = (Tokenizer*)mallocCheck(sizeof(Tokenizer));
+  tokenizer_init(tokenizer, filename);
+  return tokenizer;
+}
+
 const char *tokenizer_decode(Tokenizer *tokenizer, uint32_t token_id) {
     if (tokenizer->init_ok == 0) {
         return NULL;
@@ -102,4 +108,10 @@ void tokenizer_free(Tokenizer *tokenizer) {
         }
         free(tokenizer->token_table);
     }
+}
+
+void tokenizer_destroy(Tokenizer* tokenizer) {
+  tokenizer_free(tokenizer);
+  free(tokenizer);
+  tokenizer = NULL;
 }
