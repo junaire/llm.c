@@ -1,0 +1,50 @@
+name: Cmake
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build-Clang-Linux:
+    strategy:
+      matrix:
+        target:
+        - 'Debug'
+        - 'Release'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install clang
+      run: |
+        sudo apt update && sudo apt install build-essential software-properties-common clang
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+    - name: Build
+      run: |
+        echo "/usr/lib/ccache:/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+        mkdir build
+        cd build
+        cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=${{ matrix.target }} ..
+        cmake --build . -j$(nproc)
+        ctest . -j$(nproc)
+  build-GCC-Linux:
+    strategy:
+      matrix:
+        target:
+        - 'Debug'
+        - 'Release'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install GCC
+      run: |
+        sudo apt update && sudo apt install build-essential software-properties-common
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+    - name: Build
+      run: |
+        echo "/usr/lib/ccache:/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+        mkdir build
+        cd build
+        cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=${{ matrix.target }} ..
+        cmake --build . -j$(nproc)

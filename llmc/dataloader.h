@@ -200,6 +200,18 @@ void dataloader_init(DataLoader *loader,
     dataloader_reset(loader);
 }
 
+DataLoader* dataloader_create(
+                     const char* filename_pattern,
+                     size_t B,
+                     size_t T,
+                     int process_rank,
+                     int num_processes,
+                     int should_shuffle) {
+  DataLoader* loader = (DataLoader*)mallocCheck(sizeof(DataLoader));
+  dataloader_init(loader, filename_pattern, B, T, process_rank, num_processes, should_shuffle);
+  return loader;
+}
+
 void dataloader_load_batch(DataLoader* loader) {
     assert(!loader->should_shuffle || (loader->should_shuffle && loader->intra_shard_indices != NULL));
     assert(loader->current_sample_idx < loader->shard_num_samples);
@@ -246,6 +258,12 @@ void dataloader_free(DataLoader *loader) {
     }
     fcloseCheck(loader->tokens_file);
     globfree(&loader->glob_result);
+}
+
+void dataloader_destroy(DataLoader* loader) {
+  dataloader_free(loader);
+  free(loader);
+  loader = NULL;
 }
 
 // ----------------------------------------------------------------------------
