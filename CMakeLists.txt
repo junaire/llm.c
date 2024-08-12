@@ -7,6 +7,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Always export compile_commands.json for lsp like clangd.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -25,7 +27,7 @@ endif()
 # option(PRECISION "Precision settings" BF16)
 # option(USE_CUDNN "Use cudnn" ON)
 
-add_library(train_gpt2_cpu SHARED train_gpt2.c)
+add_library(train_gpt2_cpu train_gpt2.c)
 target_include_directories(train_gpt2_cpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/llmc)
 target_link_libraries(train_gpt2_cpu PRIVATE m)
 target_compile_definitions(train_gpt2_cpu PRIVATE -DLLMC_LIB=1)
