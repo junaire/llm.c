@@ -25,7 +25,7 @@ endif()
 # option(PRECISION "Precision settings" BF16)
 # option(USE_CUDNN "Use cudnn" ON)
 
-add_library(train_gpt2_cpu SHARED train_gpt2.c)
+add_library(train_gpt2_cpu train_gpt2.c)
 target_include_directories(train_gpt2_cpu PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/llmc)
 target_link_libraries(train_gpt2_cpu PRIVATE m)
 target_compile_definitions(train_gpt2_cpu PRIVATE -DLLMC_LIB=1)
