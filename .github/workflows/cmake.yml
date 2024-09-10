@@ -48,3 +48,29 @@ jobs:
         cd build
         cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=${{ matrix.target }} ..
         cmake --build . -j$(nproc)
+  build-CUDA:
+    strategy:
+      matrix:
+        target:
+        - 'Debug'
+        - 'Release'
+    runs-on: ubuntu-22.04
+    container:
+      image: nvidia/cuda:12.6.1-cudnn-devel-ubuntu22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: System Info
+        run: |
+          nvcc --version
+          g++ --version
+
+      - name: Build
+        run: |
+          ln -snf /usr/share/zoneinfo/Africa/Abidjan /etc/localtime && echo Africa/Abidjan > /etc/timezone
+          apt-get update && apt-get install -y git cmake
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.target }} .. -DCUDALIB=1
+          cmake --build . -j$(nproc)
